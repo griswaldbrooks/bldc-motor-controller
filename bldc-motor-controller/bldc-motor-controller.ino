@@ -4,13 +4,14 @@
 const unsigned int PHASE_A(2);
 const unsigned int PHASE_B(3);
 const unsigned int PHASE_C(4);
+const unsigned int MODE_PIN(7);
 
 void setup() 
 {
     pinMode(PHASE_A, OUTPUT);
     pinMode(PHASE_B, OUTPUT);
     pinMode(PHASE_C, OUTPUT);
-
+    pinMode(MODE_PIN, INPUT);
     Serial.begin(115200);
 }
 
@@ -71,27 +72,32 @@ void loop()
     Serial.println(analog_value_current);
     Serial.print("da = ");
     Serial.println(da);
-    /*
-    if (da > 5)
+
+    int delay_ms(50.f * sin(millis() / 1000.f));
+   
+    // If mode is HIGH, do position control, else speed demo. 
+    if (digitalRead(MODE_PIN) == HIGH)
     {
-        cycle(50);
-        analog_value_prev = analog_value_current;
-    }
-    else if (da < -5)
-    {
-        cycle(-50);
-        analog_value_prev = analog_value_current;
+        if (da > 5)
+        {
+            cycle(-50);
+            analog_value_prev = analog_value_current;
+        }
+        else if (da < -5)
+        {
+            cycle(50);
+            analog_value_prev = analog_value_current;
+        }
+        else
+        {
+            cycle(0);
+        }
     }
     else
     {
-        cycle(0);
+        Serial.print("delay_ms = ");
+        Serial.println(delay_ms);
+        cycle(delay_ms);
     }
-    */
-    
-    int delay_ms(50.f * sin(millis() / 1000.f));
-    Serial.print("delay_ms = ");
-    Serial.println(delay_ms);
-    cycle(delay_ms);
-    /**/
 }
 
